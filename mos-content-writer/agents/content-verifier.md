@@ -7,7 +7,7 @@ quality checklist for its brief type. Find the issues and fix the ones you can.
 
 1. **Article:** the written article (Markdown)
 2. **Brief:** the original brief (Markdown)
-3. **Brief type:** "standard" or "best-x-for-y"
+3. **Brief type:** "standard", "best-x-for-y" or "vs"
 4. **Word-count data:** JSON from `scripts/word_counter.py`
 5. **Internal links list:** every internal link in the brief
 6. **Linter report:** output of `lint-copy.ts` from the `mos-copywriting` skill, when it ran.
@@ -16,6 +16,8 @@ quality checklist for its brief type. Find the issues and fix the ones you can.
    `research/picks.json` and `research/criteria.md`. Read all three; the integrity gate below
    checks the article against them, not against the brief prose. If any is missing, the
    article fails the gate (MANUAL).
+   For vs: the path to `research/evidence.csv`; check the article against it and the vs
+   checklist in `references/quality-checklists.md`. Missing file fails the gate (MANUAL).
 
 ## Verification steps
 

@@ -1,17 +1,19 @@
 ---
 name: mos-content-best-x-for-y
 description: >
-  Build "best X for Y" buyer's guide briefs: asks for your page ideas first, checks demand (volume plus what ChatGPT, AI Mode and Perplexity
-  recommend), runs an eligibility gate so your brand only appears where it is an
-  honest pick, assembles 4 to 10 entries, gets your sign-off on criteria and methodology,
-  captures sourced, dated evidence for every competitor fact, and assigns "Best for" /
-  "Not for" to every entry. Your brand is never ranked first by default. Output: one brief
-  per page (ItemList schema, disclosure line, no year in the title) for mos-content-writer. USE WHEN the user says "best X for Y", "best [category] for
-  [audience]", "buyer's guide", "buying guide", "listicle", "listicle brief", "best of
-  brief", "comparison list", "top picks page", "/mos-content-best-x-for-y", or asks which
-  "best for" pages their brand should have. NOT FOR one-vs-one pages (mos-geo-vs-content
-  is planned, not yet released), standard articles (mos-content-brief), or writing the
-  page (mos-content-writer).
+  Build the brief for one "best X for Y" buyer's guide page: assembles 4 to 10 entries,
+  gets your sign-off on criteria and methodology, captures sourced, dated evidence for
+  every competitor fact, and assigns "Best for" / "Not for" to every entry. Your brand
+  is never ranked first by default and only appears where it passed the eligibility
+  gate. Starts from a mos-geo-best-x-for-y shortlist when one exists (gate
+  result, handover), otherwise runs a light demand check and gate for that one page.
+  Output: one brief per page (ItemList schema, disclosure line, no year in the title)
+  for mos-content-writer. USE WHEN the user says "best X for Y brief", "buyer's guide
+  brief", "buying guide", "listicle brief", "best of brief", "comparison list", "top
+  picks page", "/mos-content-best-x-for-y", or hands over a shortlist page.
+  NOT FOR deciding which best-for pages the brand should build (mos-geo-best-x-for-y),
+  one-vs-one pages (mos-geo-vs-content), standard articles (mos-content-brief), or
+  writing the page (mos-content-writer).
 allowed-tools:
   - Read
   - Grep
@@ -93,6 +95,10 @@ free check) and, for each missing one, what the run will lack. Do not stop for a
 Every DataForSEO call reports its cost (`[cost]` on stderr, `cost_usd` in JSON); add them up
 and report the run's total spend.
 
+## Starting from a mos-geo-best-x-for-y shortlist
+
+When the brain has `campaigns/geo/YYYY-MM/content-ideas/best-x-for-y/publishing/NN-<slug>.md`, or the user hands one over, the shortlist stage is already done for that page: the user picked it, demand was checked and the brand went through the five-test gate. Read the handover and reuse its seeds, candidates, gate result and engine answers. Skip Phases 1 to 3 and start at Phase 4. Do not re-gate the brand: pass the handover's `gate-result.json` to `bxy.py check --gate` so the built brief cannot put the brand on a page it failed. Run Phases 1 to 3 only when no shortlist exists, and then for this one page.
+
 ## Phase 1: Ask first
 
 Before any research, one AskUserQuestion set (every question has a "Skip, you suggest"
@@ -170,8 +176,9 @@ Spawn these with the Agent tool in one block, each with the brief inputs listed 
 
 Then build the **candidate set**: the union of the options the engines recommended, the
 brands across the Google top 10 and the review-site or directory leaders. Trim to 4 to 10 with
-a reason per entry (fewer than 4 is a comparison page: stop and tell the user this pack has no
-comparison skill yet; `mos-geo-vs-content` is planned, not yet released).
+a reason per entry (fewer than 4 is a comparison page: stop and route the user to `mos-geo-vs-content` in the
+mos-geo-skills pack, which writes a writer-ready brief per vs page to
+`campaigns/geo/YYYY-MM/content-ideas/vs-content/publishing/NN-*/`).
 Include the brand only if it passed the gate for this page. Save `entries.json`.
 
 ## Phase 5: Criteria and methodology (user approval gate)
@@ -335,7 +342,9 @@ If neither the `gws` CLI nor a Google Drive connector is available, skip silentl
   citation and recommendation as two separate numbers. Re-capture competitor facts every
   90 days.
 - One-vs-one pages for the 2 or 3 names the engines put next to the brand: `mos-geo-vs-content`
-  (planned, not yet released).
+  (mos-geo-skills pack). It writes a writer-ready brief per page to
+  `campaigns/geo/YYYY-MM/content-ideas/vs-content/publishing/NN-*/`, which `mos-content-writer`
+  then writes from.
 
 ## Files in this skill
 

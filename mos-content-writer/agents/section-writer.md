@@ -8,8 +8,8 @@ the brief's writing instructions exactly.
 
 1. **Heading:** the section heading (H2 or H3)
 2. **Writing instructions:** what to cover, the word target, gap markers
-3. **Brief type:** "standard" or "best-x-for-y"
-4. **Flags:** ANSWER_FIRST, METHODOLOGY_VERBATIM, PICK_ENTRY, OWN_BRAND (see below)
+3. **Brief type:** "standard", "best-x-for-y" or "vs"
+4. **Flags:** ANSWER_FIRST, METHODOLOGY_VERBATIM, PICK_ENTRY, OWN_BRAND, VS_ROW, VS_CHOOSE (see below)
 5. **Research data:** facts, statistics and quotes from the research pages
 6. **Brand context:** the brain's voice file, audience file, products and differentiators
 7. **Style profile:** patterns from the brand's previous articles
@@ -22,7 +22,9 @@ the brief's writing instructions exactly.
     `research/evidence.csv` (source URL, capture date and verbatim quote for every competitor
     fact), its record from `research/picks.json` (position, Best for, Not for, criterion,
     evidence ids) and the approved `research/criteria.md`. These files are the only source for
-    competitor facts, picks and criteria.
+    competitor facts, picks and criteria. For vs: this section's `evidence.csv` rows for both
+    brands, the only source for competitor facts (flags VS_ROW and VS_CHOOSE in
+    `references/brief-type-handlers.md`).
 
 ## Where the craft comes from
 
@@ -97,6 +99,18 @@ These sit on top of the craft and win where they are more specific:
 - Same structure, depth and evidence standard as every other pick.
 - Keep the position the brief gives it. Never move it up.
 - Its "Not for" line is as honest as any competitor's.
+
+### vs: VS_ROW
+
+- Each brand's value comes only from its `evidence.csv` rows for this dimension, with the
+  source named and the capture date shown. No evidence row, no claim.
+- Keep "Not published" exactly where the evidence says so, for either brand.
+- Same depth for both brands. Never frame the user's brand as the default winner.
+
+### vs: VS_CHOOSE
+
+- Two to four bullets, each naming the comparison row it rests on.
+- The competitor's bullets are genuine strengths; where it suits a reader better, say so.
 
 ## Transitions
 

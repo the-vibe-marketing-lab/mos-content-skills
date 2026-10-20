@@ -75,6 +75,36 @@ fix it before output.**
 **Pass threshold:** every point passes (B1 to B5 and 1 to 16). Integrity failures come
 first in revision.
 
+## vs checklist
+
+**Points V1 to V5 are must-fix integrity rules.**
+
+- **V1. No brand-first framing.** The user's brand is not declared the winner by default,
+  does not lead the answer, and gets no more depth than the competitor.
+- **V2. Every competitor fact traces to a row** in `research/evidence.csv` (source URL,
+  capture date, verbatim quote), and the source is named in the text.
+- **V3. "Not published" is kept** wherever the evidence says so, for either brand.
+- **V4. Capture dates are shown** for the evidence (in the table or next to each fact).
+- **V5. The disclosure is present** (the user's brand publishes the page) with the method.
+
+1. The page opens with a direct answer saying who each option suits.
+2. Every comparison row from the brief is present, for both brands.
+3. Both "Choose ... if" sections are present, each bullet tied to a row.
+4. No year in the title or H1; no "#1" or unsourced superlatives.
+5. Schema note recommends Article (plus FAQPage if there is an FAQ) only; never
+   AggregateRating, Review or a ranked ItemList.
+6. Every internal link from the brief used.
+7. Primary keyword in the H1 and the first 100 words.
+8. Total word count within the brief's range.
+9. GEO: FAQ answers open with a standalone direct answer.
+10. No hard-sell CTA anywhere; one soft next step at the end.
+11. Zero em dashes in the article.
+12. Spelling matches the brain's locale.
+13. The `mos-content-humanizer` pass ran on the full draft before verification.
+
+**Pass threshold:** every point passes (V1 to V5 and 1 to 13). Integrity failures come
+first in revision.
+
 ## Running the checklists
 
 - Run the checklist after the full draft, not during writing.

@@ -6,6 +6,7 @@ How to detect and handle each brief type this skill writes from.
 
 From the brief's Content Guidelines table and outline:
 
+- `Content type` starts with "1v1 comparison (vs page)": **vs**.
 - `Content type` mentions "best X for Y" or "buyer's guide", or the outline has a
   methodology block and picks with "Best for" and "Not for": **best-x-for-y**.
 - `New or Optimisation` is "Optimisation": **not supported**. Stop and offer a fresh
@@ -112,4 +113,63 @@ after the picks are written so it matches them.
 - Puts a year in the title.
 - Asks for AggregateRating or review-star schema. Recommend ItemList schema only.
 - Invents ratings, prices or features.
+- Uses hard-sell language. One soft next step at the end is the only CTA.
+
+## vs briefs (from mos-geo-vs-content)
+
+A vs page compares the user's brand with one competitor. `mos-geo-vs-content` (mos-geo-skills
+pack) has already chosen the pairing, captured the evidence and checked every quote against
+its saved page. The brief sits at
+`campaigns/geo/YYYY-MM/content-ideas/vs-content/publishing/NN-<slug>/<slug>-brief.md`. The
+writer's job is to write it faithfully, not to pick a winner.
+
+### Evidence file (required)
+
+Read `<brief dir>/research/evidence.csv`: one row per fact, with columns `brand`, `dimension`,
+`value`, `verbatim_quote`, `source_url`, `snapshot_file` and `captured_on`. One dimension can
+have several rows per brand (for example one per price tier). If the file is missing or has
+no data rows, stop and offer to re-run `mos-geo-vs-content` for this page. Pass each
+comparison section's rows (matched on `dimension`) to the section writer, and the file path to
+the content verifier.
+
+### What to carry from the brief
+
+- **Rules (non-negotiable):** the brief's own list. It wins over any style preference.
+- **At a glance table:** one row per dimension, both brands, with each cell's source link and
+  capture date from `evidence.csv`.
+- **Comparison sections:** one per dimension, using only that dimension's rows.
+- **"Choose {Brand} if" and "Choose {Competitor} if":** two to four bullets each, every one tied
+  to a comparison row.
+- **How we compared:** the methodology block (public pages only, capture dates, the same rows
+  for both brands, "Not published" where nothing is published) and the disclosure that the
+  user's brand publishes the page.
+
+### Flags
+
+**ANSWER_FIRST=true** (the answer paragraph under the H1, and each comparison section)
+- The first sentence says who each option suits, drawn from the rows. Context follows.
+
+**VS_ROW=true** (the at-a-glance table and each comparison section)
+- State each brand's value from its `evidence.csv` rows only, naming the source and showing
+  the capture date. Quote the verbatim text where the brief quotes it.
+- A value the brief marks "Not published" stays "Not published", for either brand. Never
+  fill it with a guess or from memory.
+- Same depth and the same rows for both brands.
+
+**VS_CHOOSE=true** (the two "Choose ... if" sections)
+- Each bullet names the row it rests on. The competitor's bullets are its genuine strengths;
+  where it suits a reader better, say so plainly.
+
+**METHODOLOGY_VERBATIM=true** (How we compared)
+- Keep the method, the capture dates and the disclosure as the brief states them.
+
+### Things a vs page never does
+
+- Frames the page brand-first: it never declares the user's brand the winner by default,
+  never leads with it as the answer, and never gives it more depth than the competitor.
+- States a competitor fact, weakness or number that has no `evidence.csv` row.
+- Drops a "Not published" value or a capture date.
+- Puts a year in the title, or uses "#1" or unsourced superlatives.
+- Asks for AggregateRating, Review or ranked ItemList schema. Article schema only (plus
+  FAQPage when there is an FAQ).
 - Uses hard-sell language. One soft next step at the end is the only CTA.

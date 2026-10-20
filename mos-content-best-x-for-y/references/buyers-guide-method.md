@@ -40,7 +40,8 @@ re-reading the reason.
    re-check.
 5. **4 to 10 entries.** Lists of 4 to 10 brands did better for their author than lists of 2 to
    3 or 11 to 15 (Scrunch). Fewer than 4 is a comparison, which belongs on a vs page:
-   `mos-geo-vs-content` (planned, not yet released).
+   `mos-geo-vs-content` (mos-geo-skills pack), which writes a writer-ready brief per page to
+   `campaigns/geo/YYYY-MM/content-ideas/vs-content/publishing/NN-*/`.
 6. **Expect a moving target.** Listicle share of ChatGPT citations reportedly halved after
    GPT 5.6 (Peec AI, Aug 2026, disputed by a smaller hotel-search corpus), and listicle share
    of Google AI Overview citations fell from about 26% to about 18% between Q1 and July 2026

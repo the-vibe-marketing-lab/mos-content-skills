@@ -6,7 +6,7 @@ what each section says.
 
 ## Input
 
-The full assembled article as Markdown, plus the brief type (standard or best-x-for-y).
+The full assembled article as Markdown, plus the brief type (standard, best-x-for-y or vs).
 
 ## What to do
 

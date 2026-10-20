@@ -2,8 +2,8 @@
 name: mos-content-writer
 description: >
   Write a publication-ready SEO + GEO article FROM AN EXISTING, APPROVED BRIEF.
-  Downstream of mos-content-brief and mos-content-best-x-for-y: a -brief.md file is
-  a hard precondition. Loads the MarketingOS brain's voice and audience, follows the
+  Downstream of mos-content-brief, mos-content-best-x-for-y and mos-geo-vs-content
+  (mos-geo-skills pack, for 1v1 vs pages): a -brief.md file is a hard precondition. Loads the MarketingOS brain's voice and audience, follows the
   brief's outline section by section with the Copywriter agent (or in session),
   runs the mandatory humanizer pass, then a linter, word counter and checklist
   verifier. The chain is brief, then write, then mos-proofread.
@@ -11,8 +11,7 @@ description: >
   "execute this brief", "write the article from [brief path]", "content from brief",
   "draft [brief name]", "write the latest brief".
   NOT FOR: "write an article about X" with no brief (run mos-content-brief or
-  mos-content-best-x-for-y first); 1v1 comparison pages (mos-geo-vs-content is
-  planned, not yet released); sales pages, emails, ads or social posts with no
+  mos-content-best-x-for-y first; for a 1v1 vs page, mos-geo-vs-content); sales pages, emails, ads or social posts with no
   search target (mos-copy-research then mos-copywriting); proofreading a finished
   draft (mos-proofread).
 allowed-tools:
@@ -29,10 +28,13 @@ allowed-tools:
 
 # Content Writer: from brief to article
 
-Write a full article from a completed brief. Two brief types are supported:
+Write a full article from a completed brief. Three brief types are supported:
 
 - **Standard article brief** from `mos-content-brief`.
 - **Best X for Y brief** (a genuine buyer's guide) from `mos-content-best-x-for-y`.
+- **vs brief** (one brand against one competitor) from `mos-geo-vs-content` in the
+  mos-geo-skills pack, saved at
+  `campaigns/geo/YYYY-MM/content-ideas/vs-content/publishing/NN-<slug>/<slug>-brief.md`.
 
 ## Hard precondition: a brief must exist first
 
@@ -50,8 +52,10 @@ Confirm the topic and content type, then run the matching brief skill first:
 
 - Standard article: `mos-content-brief`
 - "Best X for Y" buyer's guide: `mos-content-best-x-for-y`
-- Head-to-head comparison of exactly two products: no skill for this exists yet
-  (`mos-geo-vs-content` is planned, not yet released). Say so; do not route the user there.
+- Head-to-head comparison of exactly two products: `mos-geo-vs-content` (mos-geo-skills
+  pack). It writes a writer-ready brief per page to
+  `campaigns/geo/YYYY-MM/content-ideas/vs-content/publishing/NN-*/`, with its evidence in
+  that folder's `research/evidence.csv`.
 
 Let the user review the brief (its tables are an intentional checkpoint), then run this
 skill against the approved file. Phase 0 enforces this: no resolvable brief means stop.
@@ -89,7 +93,8 @@ If this phase fails, stop and route the user back to a brief skill. Never invent
 1. **Locate the brief.**
    - Explicit path: read it. Fail if the file does not exist.
    - "The latest brief": glob `content/**/brief/*-brief.md` from the brain root (plus any
-     content route the brain declares, per `$SKILL/../_shared/content-output-routing.md`), sort
+     content route the brain declares, per `$SKILL/../_shared/content-output-routing.md`, and
+     `campaigns/geo/*/content-ideas/vs-content/publishing/*/*-brief.md` for vs briefs), sort
      by modification time and take the newest. Zero matches is a failure.
    - The brief is ONE file: the guideline tables plus `# Article Outline`. Read both
      from it.
@@ -98,7 +103,7 @@ If this phase fails, stop and route the user back to a brief skill. Never invent
    > - Standard article: `mos-content-brief`
    > - "Best X for Y" buyer's guide: `mos-content-best-x-for-y`
    >
-   > (A head-to-head comparison skill, `mos-geo-vs-content`, is planned, not yet released, so there is no brief skill for a two-product vs page yet.)
+   > - Head-to-head vs page (your brand against one competitor): `mos-geo-vs-content` (mos-geo-skills pack), which writes the brief to `campaigns/geo/YYYY-MM/content-ideas/vs-content/publishing/NN-*/`
 3. **Sanity-check the file** before trusting it:
    - The filename ends in `-brief.md`.
    - It has a `Content Guidelines` table and an outline (`# Article Outline`, or `##`/`###`
@@ -117,6 +122,7 @@ If this phase fails, stop and route the user back to a brief skill. Never invent
      results (unaware, problem aware, solution aware, product aware, most aware; market
      sophistication 1 to 5) and say that you inferred it.
 5. **Detect the brief type** from `Content type` (and the outline):
+   - Starts with "1v1 comparison (vs page)": **vs**.
    - Mentions "best X for Y", "buyer's guide", or the outline has a methodology block and
      "Best for" picks: **best-x-for-y**.
    - `New or Optimisation` says "Optimisation": stop. This pack has no optimisation brief
@@ -133,12 +139,18 @@ If this phase fails, stop and route the user back to a brief skill. Never invent
    If any of the three is missing or empty, stop. Tell the user the brief's evidence is
    incomplete and offer to re-run `mos-content-best-x-for-y` for this page. Never write picks
    from the brief prose alone.
+   **vs only: load the evidence file (blocking).** Read `<brief dir>/research/evidence.csv`
+   (columns `brand`, `dimension`, `value`, `verbatim_quote`, `source_url`, `snapshot_file`,
+   `captured_on`). If it is missing or has no data rows, stop. Tell the user the brief's
+   evidence is missing and offer to re-run `mos-geo-vs-content` for this page. Never write a
+   competitor fact from the brief prose alone.
 7. **Split the outline into sections**, each with heading level and text, writing
    instructions, word target, and the internal links that belong to it. For best-x-for-y,
    also carry the methodology block, the criteria, each pick's "Best for" and "Not for",
    the evidence rows from `evidence.csv` (source URL, capture date, verbatim quote), the
    picks from `picks.json`, the criteria from `criteria.md`, the disclosure line and which
-   entries are the user's brand.
+   entries are the user's brand. For vs, carry each comparison section's `evidence.csv` rows
+   (matched on `dimension`), the brief's Rules list, the disclosure and the capture dates.
 
 Parsing details per type: `references/brief-type-handlers.md`.
 
@@ -166,8 +178,8 @@ Spawn a Task with `agents/research-loader.md`, passing the brief's top 3 to 5 Re
 Pages. It fetches each page and extracts statistics, quotes, pricing, examples and unique
 angles, each with its source URL. A page that fails to load is noted as a gap.
 
-For best-x-for-y briefs, the rows in `research/evidence.csv` (snapshot, URL, capture date,
-verbatim quote) are the only allowed source for competitor facts. The research loader adds context;
+For best-x-for-y and vs briefs, the rows in `research/evidence.csv` (snapshot, URL, capture
+date, verbatim quote) are the only allowed source for competitor facts. The research loader adds context;
 it never replaces or overrides the brief's evidence.
 
 ## Phase 3: write section by section (sequential)
@@ -186,6 +198,8 @@ For each section:
    - best-x-for-y methodology block: `METHODOLOGY_VERBATIM=true`.
    - best-x-for-y pick entries: `PICK_ENTRY=true`, plus `OWN_BRAND=true` on the user's
      own brand where it passed the eligibility gate.
+   - vs answer and comparison sections: `ANSWER_FIRST=true` and `VS_ROW=true`; the two
+     "Choose ... if" sections: `VS_CHOOSE=true`; "How we compared": `METHODOLOGY_VERBATIM=true`.
 3. **Draft the section with the `Copywriter` agent.** The agent owns the craft; this skill
    owns the guardrails, passed as hard constraints so they beat the agent's instincts.
    Spawn `Agent(subagent_type="Copywriter")` with a brief containing:
@@ -202,6 +216,9 @@ For each section:
    - **best-x-for-y pick entries and the methodology block:** this entry's rows from
      `evidence.csv` (verbatim, with `source_url` and `captured_on`), its `picks.json` record,
      and the full `criteria.md`. The agent may state a competitor fact only from these rows.
+   - **vs sections:** the section's `evidence.csv` rows for both brands (verbatim, with
+     `source_url` and `captured_on`) and the brief's Rules list. Same rule: competitor facts
+     only from these rows.
    - **Hard constraints (verbatim, these win):** the section word target; the exact
      internal links (absolute URLs); the brief-type flags from step 2; the SEO, GEO and
      EEAT rules in `references/writing-rules.md`; never mention the research or competitor
@@ -234,7 +251,8 @@ For each section:
    precedence list): brief-dictated headings, keywords, links, `[IMAGE: ...]` markers and
    the CTA. On best-x-for-y pages also leave alone the methodology block, the pick order,
    every "Best for" and "Not for" line, evidence quotes, "Not published" values and the
-   disclosure line. This runs before Phase 5, so the linter and verifier check the
+   disclosure line. On vs pages leave alone the at-a-glance table, evidence quotes, "Not
+   published" values, capture dates and the disclosure. This runs before Phase 5, so the linter and verifier check the
    humanized text, and before the hand-off to `mos-proofread`.
 
 The brief tables are not copied into the article. The article file holds the article only.
@@ -257,7 +275,8 @@ The brief tables are not copied into the article. The article file holds the art
 3. Spawn a Task with `agents/content-verifier.md`, passing the article, the brief, the
    brief type, the word-count JSON, the internal links list, the linter report and
    `$SKILL`; for best-x-for-y also the paths to `research/evidence.csv`, `research/picks.json`
-   and `research/criteria.md`, which it checks every pick and competitor fact against. It runs
+   and `research/criteria.md`, which it checks every pick and competitor fact against; for vs
+   the path to `research/evidence.csv`. It runs
    the matching checklist in `references/quality-checklists.md` and returns a report plus a
    fixed article.
 4. Apply the fixes, then re-run the linter (must exit 0) and the word counter.
@@ -273,6 +292,8 @@ Markdown is the deliverable. No `.docx`.
    content/<YYYY>/<MM-Mon>/<YYYY-MM-DD>-<slug>/blog/article/<YYYY-MM-DD>-<slug>-article.md
    ```
    - `<slug>` and the topic folder are the brief's; the file date is today.
+   - vs briefs live under `campaigns/geo/`, not a content topic folder: take `<slug>` from
+     the brief's URL slug and create the topic folder on the default route.
    - Month folders are `MM-Mon` (for example `10-Oct`). Reuse an existing month folder.
    - The file holds the article only: no brief tables, no YAML frontmatter.
    - Working files (research notes, word-count JSON, verifier report) go in

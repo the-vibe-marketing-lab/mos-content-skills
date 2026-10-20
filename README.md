@@ -10,10 +10,10 @@ Every skill runs inside a MarketingOS brain. It reads the brand's voice, audienc
 |---|---|
 | `mos-content-brief/` | One Markdown brief for an article. Keyword research and the live top 10 (DataForSEO), competitor headings, word counts and term targets (pages fetched free with Scrapling and analysed locally), rare primary-source stats the ranking pages don't cite, what AI Overviews, AI Mode and ChatGPT cite today, and internal links checked against the live sitemap. No subscription needed: a missing key is named in the brief and skipped, never guessed. |
 | `mos-content-best-x-for-y/` | Buyer's guide briefs. Asks for your page ideas first, checks demand (search volume plus who ChatGPT, AI Mode and Perplexity recommend now), and runs an eligibility gate so the brand only appears where it is an honest pick. Every entry gets a sourced, dated "Best for" and "Not for". The brand is never #1 by default. A code check blocks a year in the title, a missing methodology block or AggregateRating schema before the brief ships. |
-| `mos-content-writer/` | Writes the article from an approved brief from either skill above. Drafts each section in the brain's voice, then runs the humanizer, a linter, a word count and a checklist, and hands over to `mos-proofread`. On buyer's guides it keeps the brief's ranking and only uses the captured evidence for competitor facts. |
+| `mos-content-writer/` | Writes the article from an approved brief from either skill above, or a vs page brief from `mos-geo-vs-content` (mos-geo-skills pack, briefs in `campaigns/geo/YYYY-MM/content-ideas/vs-content/publishing/NN-*/`). Drafts each section in the brain's voice, then runs the humanizer, a linter, a word count and a checklist, and hands over to `mos-proofread`. On buyer's guides and vs pages it keeps the brief's framing and only uses the captured evidence for competitor facts. |
 | `mos-content-humanizer/` | Rewrites AI-sounding copy without changing what it says, at sentence, page and structure level. Vendors [blader/humanizer](https://github.com/blader/humanizer) (MIT) plus digests of Wikipedia's "Signs of AI writing" and the StoryScope research. Runs automatically inside the other three skills. |
 
-The chain is: `mos-content-brief` or `mos-content-best-x-for-y`, then `mos-content-writer`, then `mos-proofread`.
+The chain is: `mos-content-brief`, `mos-content-best-x-for-y` or `mos-geo-vs-content`, then `mos-content-writer`, then `mos-proofread`.
 
 ## `_shared/`
 
@@ -51,6 +51,5 @@ bash setup.sh            # or: bash setup.sh --dry-run
 
 ## Follow-ups
 
-- `mos-geo-vs-content` (one-vs-one pages) is planned in `mos-geo-skills`, not released yet.
 - `mos-content-brief` overlaps with the engine's `mos-copy-brief` on "content brief" triggers. One of them should own that phrase.
 - No optimisation-brief skill yet: rewrites of live pages aren't covered.
